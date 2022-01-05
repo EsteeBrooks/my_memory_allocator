@@ -1,4 +1,4 @@
-Final project for Computer Systems by Professor Ari Shamash
+Final project for Computer Systems for Professor Ari Shamash
 
 Assignment: Create a your own implementation of malloc() and free(). Implement function for print statistics as well.
 
