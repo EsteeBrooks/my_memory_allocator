@@ -1,23 +1,5 @@
 // Based on https://www.tutorialspoint.com/cprogramming/c_pointers.htm implementation of Linked List
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdbool.h>
-
-// *********** Node, head and current structures:
-struct node
-{
-   unsigned char *pointer;
-   int size;
-   struct node *next;
-};
-
-// *********** Structure for storing currrent and previous nodes:
-struct cur_and_prev
-{
-   struct node *cur;
-   struct node *prev;
-};
+#include "header.h"
 
 // *********** Funcion for displaying the list:
 void printList(struct node *ptr)
@@ -113,7 +95,6 @@ struct node *find_by_pointer(struct node *head, unsigned char *pointer)
          current = current->next;
       }
    }
-
    //if data found, return the current Link
    return current;
 }

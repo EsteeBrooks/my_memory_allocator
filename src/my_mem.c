@@ -1,51 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <stdbool.h>
-
-// *********** Node, head and current structures:
-struct node
-{
-  unsigned char *pointer;
-  int size;
-  struct node *next;
-};
-
-// *********** Structure for storing currrent and previous nodes:
-struct cur_and_prev
-{
-  struct node *cur;
-  struct node *prev;
-};
-
-// *********** Structure for storing the memory's stats:
-typedef struct
-{
-  int num_blocks_used;
-  int num_blocks_free;
-  int smallest_block_free;
-  int smallest_block_used;
-  int largest_block_free;
-  int largest_block_used;
-} mem_stats_struct, *mem_stats_ptr;
-
-// *********** Function declartions for link list operations:
-void printList(struct node *ptr);
-int print_linked_lists(struct node *free_head, struct node *full_head);
-struct node *insertFirst(struct node *head, unsigned char *pointer, int size);
-struct node *deleteFirst(struct node *head);
-bool isEmpty(struct node *head);
-int length(struct node *head);
-struct node *find_by_pointer(struct node *head, unsigned char *pointer);
-struct cur_and_prev *find_with_prev(struct node *head, unsigned char *pointer);
-struct node *find_by_size(struct node *head, int size);
-int find_stats(struct node *head, bool biggest);
-struct node *delete (struct node *head, unsigned char *pointer);
-struct node *create_new_node(struct node *head, unsigned char *new_pointer, int size, bool check_link_list);
-
-// *********** Function declartions for error functions:
-void error_and_exit();
+#include "header.h"
 
 // *********** Create link lists for keeping track of used and free memory:
 struct node *full_head = NULL;
@@ -56,22 +9,36 @@ struct node *free_head = NULL;
 // is passed into this routine:
 void mem_init(unsigned char *my_memory, unsigned int my_mem_size)
 {
+  // If the mem_init is called twice, it will initilize the header twice. To avoid this,
+  // send error message:
+  if (isEmpty(free_head) == false)
+  {
+    error_and_exit("Error: Init method already called");
+  }
   // Set free head to point to new node, which is the entire memory size:
   free_head = insertFirst(full_head, my_memory, my_mem_size);
-
 }
 
 // *********** A function functionally equivalent to malloc() , but allocates it from
 // the memory pool passed to mem_init()
 void *my_malloc(unsigned size)
 {
+  // if size is zero, return null:
+  if (size == 0)
+  {
+    printf("%s", "Error: size is 0. Returned a NULL pointer.\n");
+    return NULL;
+  }
+
   // Find the first aviable FREE node whose size is bigger or equal to size:
   struct node *result = find_by_size(free_head, size);
 
-  // If there is no FREE nodes, this means the memory has been exhausted:
+  // If there is no FREE nodes, this means the memory has been exhausted.
+  // Return a NULL pointer:
   if (result == NULL)
   {
-    error_and_exit("Error: Memory exhausted");
+    printf("%s", "Error: Memory exhausted. Returned a NULL pointer.\n");
+    return NULL;
   }
 
   // Save the result’s pointer in new_full_pointer to be used
@@ -110,10 +77,11 @@ void my_free(void *mem_pointer)
   // Find the node in FULL that has mem_pointer:
   struct node *result = find_by_pointer(full_head, mem_pointer);
 
-  // If there is no node with this pointer, return an error:
+  // If there is no node with this pointer, print an error and return:
   if (result == NULL)
   {
-    error_and_exit("Error: No memory allocated under pointer");
+    printf("%s", "Error: No memory allocated under that pointer.\n");
+    return;
   }
 
   // Save the result’s pointer in new_free_pointer and its size in new_free_size
@@ -128,7 +96,6 @@ void my_free(void *mem_pointer)
   // Remember the previous node. Create a new node for new_free_pointer.
   // Insert the new node properly into full linked list before the first node (or as head):
   free_head = create_new_node(free_head, new_free_pointer, new_free_size, true);
-
 }
 
 // *********** provides statistics about the current allocation of the memory pool.
