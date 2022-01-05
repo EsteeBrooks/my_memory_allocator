@@ -1,5 +1,6 @@
 #include "header.h"
 
+
 // *********** Create link lists for keeping track of used and free memory:
 struct node *full_head = NULL;
 struct node *free_head = NULL;
@@ -17,6 +18,7 @@ void mem_init(unsigned char *my_memory, unsigned int my_mem_size)
   }
   // Set free head to point to new node, which is the entire memory size:
   free_head = insertFirst(full_head, my_memory, my_mem_size);
+
 }
 
 // *********** A function functionally equivalent to malloc() , but allocates it from
@@ -39,6 +41,7 @@ void *my_malloc(unsigned size)
   {
     printf("%s", "Error: Memory exhausted. Returned a NULL pointer.\n");
     return NULL;
+
   }
 
   // Save the result’s pointer in new_full_pointer to be used
@@ -82,6 +85,7 @@ void my_free(void *mem_pointer)
   {
     printf("%s", "Error: No memory allocated under that pointer.\n");
     return;
+
   }
 
   // Save the result’s pointer in new_free_pointer and its size in new_free_size
@@ -96,6 +100,7 @@ void my_free(void *mem_pointer)
   // Remember the previous node. Create a new node for new_free_pointer.
   // Insert the new node properly into full linked list before the first node (or as head):
   free_head = create_new_node(free_head, new_free_pointer, new_free_size, true);
+
 }
 
 // *********** provides statistics about the current allocation of the memory pool.

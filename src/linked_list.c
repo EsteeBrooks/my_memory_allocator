@@ -95,6 +95,7 @@ struct node *find_by_pointer(struct node *head, unsigned char *pointer)
          current = current->next;
       }
    }
+
    //if data found, return the current Link
    return current;
 }
